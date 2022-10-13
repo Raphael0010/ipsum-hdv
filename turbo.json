@@ -1,0 +1,55 @@
+{
+  "$schema": "https://turborepo.org/schema.json",
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", ".next/**"]
+    },
+    "test": {
+      "outputs": ["coverage/**"],
+      "dependsOn": []
+    },
+    "lint": {
+      "dependsOn": []
+    },
+    "start": {
+      "dependsOn": ["^build"]
+    },
+    "clean": {
+      "cache": false
+    },
+    "format": {
+      "cache": false
+    },
+    "dev": {
+      "cache": false
+    },
+    "common#build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"],
+      "env": ["NEXT_PUBLIC_ENVIRONMENT"]
+    },
+    "database#build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**"],
+      "env": ["NODE_ENV"]
+    },
+    "app#build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**"],
+      "env": ["NODE_ENV", "RENDER_INTERNAL_HOSTNAME", "VERCEL_URL", "PORT"]
+    },
+    "db:migrate:deploy": {
+      "outputs": []
+    },
+    "db:push": {
+      "outputs": []
+    },
+    "db:seed": {
+      "outputs": []
+    },
+    "generate": {
+      "dependsOn": ["^generate"]
+    }
+  }
+}

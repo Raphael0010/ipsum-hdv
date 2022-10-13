@@ -1,0 +1,9 @@
+POST https://proxyconnection.touch.dofus.com/data/map
+    ?v=3.3.1
+    &lang=fr
+content-type: application/json
+
+{
+    "class": "Recipes",
+    "ids": []
+}

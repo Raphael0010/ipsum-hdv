@@ -1,0 +1,48 @@
+{
+  "name": "ipsum-hdv",
+  "version": "0.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo build",
+    "build:app": "turbo build --filter=@ipsum-hdv/app...",
+    "build:packages": "turbo build --filter=./packages/*",
+    "dev": "turbo dev --parallel",
+    "dev:app": "turbo dev --parallel --filter=@ipsum-hdv/app...",
+    "dev:packages": "turbo dev --parallel --filter=./packages/*",
+    "start": "turbo start --parallel",
+    "start:app": "turbo start --filter=@ipsum-hdv/app",
+    "start:packages": "turbo start --parallel --filter=./packages/*",
+    "lint": "turbo lint",
+    "format": "turbo format",
+    "prepare": "husky install",
+    "clean": "turbo clean && rm -rf node_modules",
+    "db:migrate:deploy": "turbo db:migrate:deploy",
+    "db:push": "turbo db:push",
+    "db:seed": "turbo db:seed",
+    "generate": "turbo generate",
+    "test": "turbo test",
+    "build:docker": "COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yml build --parallel",
+    "start:docker": "docker-compose -f docker-compose.yml up -d"
+  },
+  "devDependencies": {
+    "eslint": "^8.24.0",
+    "eslint-config-custom": "workspace:*",
+    "husky": "^8.0.0",
+    "prettier": "^2.7.1",
+    "tsx": "^3.9.0",
+    "turbo": "^1.5.3"
+  },
+  "engines": {
+    "npm": ">=7.0.0",
+    "node": ">=14.0.0"
+  },
+  "prisma": {
+    "schema": "packages/database/prisma/schema.prisma",
+    "seed": "tsx packages/database/src/seed.ts"
+  },
+  "packageManager": "pnpm@7.12.2"
+}
