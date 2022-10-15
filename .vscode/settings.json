@@ -20,5 +20,8 @@
   },
   "eslint.workingDirectories": [{ "mode": "auto" }],
   // "eslint.workingDirectories": ["./packages/*", "./apps/*"],
-  "cSpell.words": ["Typesafe"]
+  "cSpell.words": [
+    "Typesafe",
+    "usehooks"
+  ]
 }

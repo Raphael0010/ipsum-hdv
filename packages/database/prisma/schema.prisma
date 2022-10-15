@@ -65,9 +65,17 @@ model Server {
 }
 
 model ItemType {
-  id    Int    @unique
-  name  String @unique
-  items Item[]
+  id          Int            @unique
+  name        String         @unique
+  superType   ItemSuperType? @relation(fields: [superTypeId], references: [id])
+  superTypeId Int?
+  items       Item[]
+}
+
+model ItemSuperType {
+  id        Int        @unique
+  name      String     @unique
+  itemTypes ItemType[]
 }
 
 model Item {

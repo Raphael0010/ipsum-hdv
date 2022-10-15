@@ -1,10 +1,7 @@
 import { useRouter } from 'next/router';
 import { trpc } from '../../../utils/trpc';
 import { styled } from '@ipsum-hdv/ui/dist/core/pikas-ui/Styles';
-import {
-  ErrorDialog,
-  InfoDialog,
-} from '@ipsum-hdv/ui/dist/core/pikas-ui/Dialog';
+import { InfoDialog } from '@ipsum-hdv/ui/dist/core/pikas-ui/Dialog';
 import { Table } from '@ipsum-hdv/ui/dist/core/pikas-ui/Table';
 import { useState, FC } from 'react';
 import { Label } from '@ipsum-hdv/ui/dist/components/text/label/Label';
@@ -111,12 +108,12 @@ export const ItemContainer: FC = () => {
 
   if (!data) {
     return (
-      <ErrorDialog
+      <InfoDialog
         visible={true}
         onClose={(): void => {
           void push(getLink('home'));
         }}
-        title={'Aucune données pour cet item'}
+        title={'Aucune données !'}
         content={`(Item ${itemId} sur ${getServerName(serverId)})`}
       />
     );

@@ -7,11 +7,8 @@ import { Grid } from '@ipsum-hdv/ui/dist/core/pikas-ui/Grid';
 import Link from 'next/link';
 import { getLink } from '@ipsum-hdv/router/dist/app';
 import { Label } from '@ipsum-hdv/ui/dist/components/text/label/Label';
-import { useDebounce, useLocalStorage } from 'usehooks-ts';
+import { useDebounce } from 'usehooks-ts';
 import { Title } from '@ipsum-hdv/ui/dist/components/title/Title';
-import { useRouter } from 'next/router';
-import { timeAgo } from '../../../utils/date';
-
 const Container = styled('div', {});
 
 const CraftStatsContainer = styled('div', {
@@ -62,28 +59,16 @@ const ContentBx = styled('div', {
 });
 
 export const HomeContainer: FC = () => {
-  const { locale } = useRouter();
   const [search, setSearch] = useState<string>('');
-  const [serverId] = useLocalStorage('serverId', 401);
-  const [formatPrice] = useState(Intl.NumberFormat(locale));
 
   const debouncedValue = useDebounce<string>(search, 500);
 
-  const { data: item } = trpc.item.allItemsByName.useQuery({
-    search: debouncedValue,
-  });
-
-  const { data: bestItem } = trpc.item.getMostProfitableItemToCraft.useQuery({
-    serverId: Number(serverId),
-  });
-
-  const { data: serverName } = trpc.item.getServerName.useQuery({
-    serverId: Number(serverId),
-  });
-
-  const { data: stats } = trpc.item.getStats.useQuery({
-    serverId: Number(serverId),
-  });
+  const { data: item } = trpc.item.allItemsByName.useQuery(
+    {
+      search: debouncedValue,
+    },
+    { refetchOnWindowFocus: false }
+  );
 
   return (
     <Container>
@@ -95,107 +80,68 @@ export const HomeContainer: FC = () => {
           Bienvenue sur l'hôtel des ventes IPSUM
         </Title>
         <HeadContainer>
-          {bestItem && (
-            <CraftStatsContainer>
-              <div>
-                <Title
-                  as="h2"
-                  css={{
-                    h2: {
-                      paddingBottom: '10px',
-                    },
-                  }}
-                >
-                  Craft les plus rentables sur {serverName?.name}
+          <CraftStatsContainer>
+            <Link href={getLink('craft')} passHref>
+              <a>
+                <Title as="h2">
+                  {
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      height={50}
+                      style={{ verticalAlign: 'middle' }}
+                      width={50}
+                      alt="craft"
+                      src="images/jobIcone.png"
+                    ></img>
+                  }{' '}
+                  Craft
                 </Title>
-                <Title
-                  as="h4"
-                  css={{
-                    h4: {
-                      color: '$PRIMARY_LIGHT',
-                    },
-                  }}
-                >
-                  {`${bestItem.price.name} : `}{' '}
-                  <span style={{ color: '#2d912c' }}>{`+${formatPrice.format(
-                    bestItem.price.ratio
-                  )}k`}</span>
-                </Title>
-                <Title
-                  as="h4"
-                  css={{
-                    h4: {
-                      color: '$PRIMARY_LIGHT',
-                    },
-                  }}
-                >
-                  {`${bestItem.ratio.name} : `}
-                  <span
-                    style={{ color: '#2d912c' }}
-                  >{`x${bestItem.ratio.ratio.toFixed(2)}`}</span>
-                </Title>
-              </div>
-            </CraftStatsContainer>
-          )}
-          {stats && (
-            <CraftStatsContainer>
-              <div>
-                <Title
-                  as="h2"
-                  css={{
-                    h2: {
-                      paddingBottom: '10px',
-                    },
-                  }}
-                >
+              </a>
+            </Link>
+          </CraftStatsContainer>
+
+          <CraftStatsContainer>
+            <Link href={getLink('stats')} passHref>
+              <a>
+                <Title as="h2">
+                  {
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      height={40}
+                      style={{ verticalAlign: 'middle' }}
+                      width={40}
+                      alt="stats"
+                      src="images/statsIcone.png"
+                    ></img>
+                  }{' '}
                   Statistiques
                 </Title>
-                <Title
-                  as="h4"
-                  css={{
-                    h4: {
-                      color: '$PRIMARY_LIGHT',
-                    },
-                  }}
-                >
-                  {`Quantité d'item : ${formatPrice.format(
-                    stats.allItemCount
-                  )}`}
+              </a>
+            </Link>
+          </CraftStatsContainer>
+          <CraftStatsContainer>
+            <Link href={getLink('almanax')} passHref>
+              <a>
+                <Title as="h2">
+                  {
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      height={60}
+                      style={{ verticalAlign: 'middle' }}
+                      width={40}
+                      alt="alama"
+                      src="images/alamaIcone.webp"
+                    ></img>
+                  }{' '}
+                  Almanax
                 </Title>
-                <Title
-                  as="h4"
-                  css={{
-                    h4: {
-                      color: '$PRIMARY_LIGHT',
-                    },
-                  }}
-                >
-                  {`Quantité de prix : ${formatPrice.format(
-                    stats.allPriceCount
-                  )}`}
-                </Title>
-                {stats.lastUpdate && (
-                  <Title
-                    as="h4"
-                    css={{
-                      h4: {
-                        color: '$PRIMARY_LIGHT',
-                      },
-                    }}
-                  >
-                    {`Dernière mise à jours : ${timeAgo(
-                      stats.lastUpdate.createdAt,
-                      locale ?? 'fr'
-                    )}`}
-                  </Title>
-                )}
-              </div>
-            </CraftStatsContainer>
-          )}
+              </a>
+            </Link>
+          </CraftStatsContainer>
         </HeadContainer>
 
         <TextBlock css={{ paddingTop: '20px' }}>
-          Je suis sur{' '}
+          Nous sommes sur{' '}
           <a
             href="https://discord.gg/ms432w6BHz"
             target={'_blank'}

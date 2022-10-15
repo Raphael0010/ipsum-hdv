@@ -47,6 +47,8 @@ module.exports = {
     },
   },
   rules: {
+    "no-shadow": "off",
+    "@typescript-eslint/no-shadow": "error",
     "prefer-const": "error",
 		eqeqeq: "error",
 		"prettier/prettier": "error",

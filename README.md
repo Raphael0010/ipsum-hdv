@@ -15,11 +15,15 @@ Parcourir les prix du DTouch n'a jamais était aussi simple
 - [X] Afficher mon discord à un endroit
 - [X] Stats sur la base de donnée
 - [X] Afficher le nombre de prix qu'on possède sur un item
+- [X] Changer le favico
+- [X] Bug quand l'item a un ingrédient inconnu au bataillon
+- [X] Faire le readme
 - [ ] Refaire la home page
-- [X] Changer le favicon
 - [ ] Stats sur le serveur
 - [ ] Gestion des archi-monstres
-- [ ] Top des craft les plus rentables du serveur
-- [ ] Animation sur le menu
-- [ ] Faire le readme
-- [X] Bug quand l'item a un ingrédient inconnu au bataillon
+- [ ] Top des craft les plus rentables du serveur (liste de craft, trie par métier, categorie)
+- [ ] Animation sur le menu- 
+- [ ] Pouvoir trier par prix toute une catégorie
+- [ ] Avoir des catégories comme DTouch
+- [ ] Voir le nombre d'item en vente, dans le cas d'un item on récupère qu'un seul prix(le plus bas) lister tous les autres et la qte
+- [ ] Afficher les crafts liée à une ressource

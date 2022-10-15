@@ -1,8 +1,10 @@
+/* eslint-disable no-await-in-loop */
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { t } from './trpc';
 // eslint-disable-next-line import/extensions
 import recipes from '../../utils/recipes.json';
+import { EFilter } from '../../components/pages/itemType/ItemTypeContainer';
 
 export const itemRouter = t.router({
   getMostProfitableItemToCraft: t.procedure
@@ -227,6 +229,7 @@ export const itemRouter = t.router({
         ...item,
       };
     }),
+
   byName: t.procedure
     .input(z.object({ name: z.string() }))
     .query(({ ctx, input }) => {
@@ -237,34 +240,139 @@ export const itemRouter = t.router({
         })
         .prices();
     }),
+
   byTypeIdSearch: t.procedure
-    .input(z.object({ id: z.number(), search: z.string() }))
-    .query(({ ctx, input }) => {
-      const { id, search } = input;
+    .input(
+      z.object({
+        id: z.number(),
+        search: z.string(),
+        filter: z.nativeEnum(EFilter),
+        serverId: z.number(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { id, search, filter, serverId } = input;
 
-      if (search.length === 0) {
-        return ctx.prisma.itemType
-          .findUnique({
-            where: { id },
-          })
-          .items();
+      if (filter === EFilter.profit || filter === EFilter.ratio) {
+        const data = await ctx.prisma.item.findMany({
+          select: {
+            id: true,
+            name: true,
+            iconId: true,
+            prices: {
+              select: {
+                x1: true,
+              },
+              where: {
+                serverId,
+              },
+              orderBy: {
+                createdAt: 'desc',
+              },
+              take: 1,
+            },
+          },
+          where: {
+            itemTypeId: id,
+          },
+        });
+
+        const allItems = await ctx.prisma.item.findMany({
+          select: {
+            id: true,
+            name: true,
+            iconId: true,
+            prices: {
+              select: {
+                x1: true,
+              },
+              where: {
+                serverId,
+              },
+              orderBy: {
+                createdAt: 'desc',
+              },
+              take: 1,
+            },
+          },
+        });
+        const all: {
+          id: number;
+          name: string;
+          iconId: number;
+          profit: number;
+        }[] = [];
+        firstLoop: for (const a of data) {
+          if (!a.prices[0] || a.prices[0].x1 === 0) {
+            continue;
+          }
+
+          const item = recipes[a.id as unknown as keyof typeof recipes];
+          let price = 0;
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          if (!item) {
+            continue;
+          }
+
+          for (let index = 0; index < item.ingredientIds.length; index++) {
+            const ingredient = allItems.find(
+              (e) => e.id === item.ingredientIds[index]
+            );
+
+            if (ingredient?.prices[0] && ingredient.prices[0].x1 !== 0) {
+              price += item.quantities[index] * ingredient.prices[0].x1;
+            } else {
+              continue firstLoop;
+            }
+          }
+
+          if (price === 0) {
+            continue;
+          }
+
+          if (filter === EFilter.profit) {
+            all.push({
+              id: a.id,
+              name: a.name,
+              iconId: a.iconId,
+              profit: a.prices[0].x1 - price,
+            });
+          } else {
+            all.push({
+              id: a.id,
+              iconId: a.iconId,
+              name: a.name,
+              profit: a.prices[0].x1 / price,
+            });
+          }
+        }
+
+        return all.sort((a, b) => b.profit - a.profit);
+      } else {
+        if (search.length === 0) {
+          return ctx.prisma.itemType
+            .findUnique({
+              where: { id },
+            })
+            .items();
+        }
+
+        return ctx.prisma.item.findMany({
+          select: {
+            id: true,
+            name: true,
+            iconId: true,
+          },
+          where: {
+            itemTypeId: {
+              equals: id,
+            },
+            name: {
+              contains: search,
+            },
+          },
+        });
       }
-
-      return ctx.prisma.item.findMany({
-        select: {
-          id: true,
-          name: true,
-          iconId: true,
-        },
-        where: {
-          itemTypeId: {
-            equals: id,
-          },
-          name: {
-            contains: search,
-          },
-        },
-      });
     }),
 
   allItemsByName: t.procedure
@@ -374,12 +482,12 @@ export const itemRouter = t.router({
       });
     }),
 
-  typeNameSearch: t.procedure
+  superTypeSearch: t.procedure
     .input(z.object({ search: z.string() }))
     .query(({ ctx, input }) => {
       const { search } = input;
       if (search.length === 0) {
-        return ctx.prisma.itemType.findMany({
+        return ctx.prisma.itemSuperType.findMany({
           select: {
             id: true,
             name: true,
@@ -389,10 +497,14 @@ export const itemRouter = t.router({
           },
         });
       }
-      return ctx.prisma.itemType.findMany({
+
+      return ctx.prisma.itemSuperType.findMany({
         select: {
           id: true,
           name: true,
+        },
+        orderBy: {
+          name: 'asc',
         },
         where: {
           name: {
@@ -401,6 +513,108 @@ export const itemRouter = t.router({
         },
       });
     }),
+
+  getItemTypeFromSuperType: t.procedure
+    .input(z.object({ superTypeId: z.number(), search: z.string().optional() }))
+    .query(async ({ ctx, input }) => {
+      const { superTypeId, search } = input;
+
+      let res: {
+        id: number;
+        name: string;
+      }[] = [];
+
+      if (search && search.length !== 0) {
+        res = await ctx.prisma.itemType.findMany({
+          select: {
+            id: true,
+            name: true,
+          },
+          orderBy: {
+            name: 'asc',
+          },
+          where: {
+            superTypeId,
+            name: {
+              contains: search,
+            },
+          },
+        });
+      } else {
+        res = await ctx.prisma.itemType.findMany({
+          select: {
+            id: true,
+            name: true,
+          },
+          orderBy: {
+            name: 'asc',
+          },
+          where: {
+            superTypeId,
+          },
+        });
+      }
+
+      const final: { id: number; name: string; image: number | undefined }[] =
+        [];
+
+      for (const r of res) {
+        const p = {
+          id: r.id,
+          name: r.name,
+
+          image: (
+            await ctx.prisma.item.findFirst({
+              select: {
+                iconId: true,
+              },
+              where: {
+                itemTypeId: r.id,
+              },
+            })
+          )?.iconId,
+        };
+
+        final.push(p);
+      }
+
+      return final;
+    }),
+
+  getSuperType: t.procedure
+    .input(z.object({ superTypeId: z.number() }))
+    .query(({ ctx, input }) => {
+      const { superTypeId } = input;
+
+      return ctx.prisma.itemSuperType.findUnique({
+        select: {
+          id: true,
+          name: true,
+        },
+        where: {
+          id: superTypeId,
+        },
+      });
+    }),
+
+  getRandomItemFromType: t.procedure
+    .input(z.object({ typeId: z.number() }))
+    .query(async ({ ctx, input }) => {
+      const { typeId } = input;
+
+      const res = await ctx.prisma.item.findMany({
+        select: {
+          id: true,
+          name: true,
+        },
+        where: {
+          itemTypeId: typeId,
+        },
+      });
+
+      return res[Math.floor(Math.random() * res.length)];
+    }),
+
   getServerAndUpdate: t.procedure.input(z.object({})).query(({ ctx }) =>
     ctx.prisma.server.findMany({
       select: {
