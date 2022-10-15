@@ -25,7 +25,7 @@ const NavLink = styled('a', {
   cursor: 'pointer',
   paddingLeft: '20px',
   paddingBottom: '5px',
-  paddingTop: '5px',
+  paddingTop: '10px',
   textDecoration: 'none',
   variants: {
     active: {
@@ -38,6 +38,9 @@ const NavLink = styled('a', {
         color: '$PRIMARY_DARKER',
       },
     },
+  },
+  '@lg': {
+    paddingTop: '3px',
   },
 });
 

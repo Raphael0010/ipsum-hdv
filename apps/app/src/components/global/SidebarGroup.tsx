@@ -6,7 +6,7 @@ type SidebarGroupProps = {
 };
 
 export const SidebarGroup: FC<SidebarGroupProps> = (props) => (
-  <nav style={{ overflowY: 'scroll' }}>
+  <nav style={{ overflowY: 'auto' }}>
     {props.label}
     {props.children}
   </nav>

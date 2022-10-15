@@ -33,20 +33,24 @@ type Props = {
 
 export const SuperTypeContainer: FC<Props> = ({ superTypeId }) => {
   const [search, setSearch] = useState<string>('');
-  const { data: itemsTypes } = trpc.item.getItemTypeFromSuperType.useQuery(
-    {
-      superTypeId,
-      search,
-    },
-    { refetchOnWindowFocus: false }
-  );
+
+  const [startSearch, setStartSearch] = useState<boolean>(false);
 
   const { data: superTypeData } = trpc.item.getSuperType.useQuery(
     {
       superTypeId,
     },
-    { refetchOnWindowFocus: false }
+    { refetchOnWindowFocus: false, onSuccess: () => setStartSearch(true) }
   );
+
+  const { data: itemsTypes, isLoading } =
+    trpc.item.getItemTypeFromSuperType.useQuery(
+      {
+        superTypeId,
+        search,
+      },
+      { refetchOnWindowFocus: false, enabled: startSearch }
+    );
 
   return (
     <>
@@ -62,54 +66,90 @@ export const SuperTypeContainer: FC<Props> = ({ superTypeId }) => {
             value={search}
           ></Textfield>
         </Header>
-        {itemsTypes && (
-          <Grid
-            css={{ alignItems: 'stretch', gridAutoRows: '1fr' }}
-            type="container"
-            cols={{ default: 12 }}
-          >
-            {itemsTypes.map((e) => (
-              <Grid
-                key={e.id}
-                css={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  backgroundColor: '$BACKGROUND_LIGHTER',
-                  borderRadius: '20px',
-                  overflow: 'hidden',
-                  padding: '10px',
-                }}
-                type="item"
-                cols={{ default: 12, xl: 2, lg: 4, md: 6, sm: 8, xs: 12 }}
-              >
-                <Link
+        <Grid
+          css={{ alignItems: 'stretch', gridAutoRows: '1fr' }}
+          type="container"
+          cols={{ default: 12 }}
+        >
+          {isLoading && (
+            <Grid
+              css={{
+                display: 'flex',
+                flex: 1,
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: '$BACKGROUND_LIGHTER',
+                borderRadius: '20px',
+                overflow: 'hidden',
+                padding: '10px',
+              }}
+              type="item"
+              cols={{ default: 12 }}
+            >
+              <ImgBox>
+                {
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    alt="charge"
+                    height={100}
+                    width={100}
+                    src={`/images/joris.png`}
+                  />
+                }
+              </ImgBox>
+              <ContentBx>
+                <Label>Je charge les données !</Label>
+              </ContentBx>
+            </Grid>
+          )}
+          {itemsTypes && (
+            <>
+              {itemsTypes.map((e) => (
+                <Grid
                   key={e.id}
-                  href={getLink('itemType', { queries: { itemTypeId: e.id } })}
-                  passHref
+                  css={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: '$BACKGROUND_LIGHTER',
+                    borderRadius: '20px',
+                    overflow: 'hidden',
+                    padding: '10px',
+                  }}
+                  type="item"
+                  cols={{ default: 12, xl: 2, lg: 4, md: 6, sm: 8, xs: 12 }}
                 >
-                  <a>
-                    <ImgBox>
-                      {e.image && (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          alt={e.name}
-                          height={100}
-                          width={100}
-                          src={`https://dofustouch.cdn.ankama.com/assets/2.42.2_U7k-aouuURq6Y4uGi0cvG.0puOIzszMT/gfx/items/${e.image}.png`}
-                        />
-                      )}
-                    </ImgBox>
-                    <ContentBx>
-                      <Label>{e.name}</Label>
-                    </ContentBx>
-                  </a>
-                </Link>
-              </Grid>
-            ))}
-          </Grid>
-        )}
+                  <Link
+                    key={e.id}
+                    href={getLink('itemType', {
+                      queries: { itemTypeId: e.id },
+                    })}
+                    passHref
+                  >
+                    <a>
+                      <ImgBox>
+                        {e.image && (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            alt={e.name}
+                            height={100}
+                            width={100}
+                            src={`https://dofustouch.cdn.ankama.com/assets/2.42.2_U7k-aouuURq6Y4uGi0cvG.0puOIzszMT/gfx/items/${e.image}.png`}
+                          />
+                        )}
+                      </ImgBox>
+                      <ContentBx>
+                        <Label>{e.name}</Label>
+                      </ContentBx>
+                    </a>
+                  </Link>
+                </Grid>
+              ))}
+            </>
+          )}
+        </Grid>
       </div>
     </>
   );
