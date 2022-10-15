@@ -29,19 +29,11 @@ const Header = styled('div', {
 
 type Props = {
   superTypeId: number;
+  name: string;
 };
 
-export const SuperTypeContainer: FC<Props> = ({ superTypeId }) => {
+export const SuperTypeContainer: FC<Props> = ({ superTypeId, name }) => {
   const [search, setSearch] = useState<string>('');
-
-  const [startSearch, setStartSearch] = useState<boolean>(false);
-
-  const { data: superTypeData } = trpc.item.getSuperType.useQuery(
-    {
-      superTypeId,
-    },
-    { refetchOnWindowFocus: false, onSuccess: () => setStartSearch(true) }
-  );
 
   const { data: itemsTypes, isLoading } =
     trpc.item.getItemTypeFromSuperType.useQuery(
@@ -49,16 +41,16 @@ export const SuperTypeContainer: FC<Props> = ({ superTypeId }) => {
         superTypeId,
         search,
       },
-      { refetchOnWindowFocus: false, enabled: startSearch }
+      { refetchOnWindowFocus: false }
     );
 
   return (
     <>
-      <NextSeo title={superTypeData?.name} />
+      <NextSeo title={name} />
       <div>
         <Header>
           <Title as="h1" css={{ h1: { paddingBottom: '20px' } }}>
-            {superTypeData?.name}
+            {name}
           </Title>
           <Textfield
             onChange={(e) => setSearch(e.target.value)}

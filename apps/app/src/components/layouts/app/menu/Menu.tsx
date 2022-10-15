@@ -194,7 +194,9 @@ export const Menu: FC<Props> = ({ isOpen, setIsOpen }) => {
             label={e.name}
             onClick={() => setIsOpen(false)}
             selected={router.query.superTypeId === e.id.toString()}
-            href={getLink('superType', { queries: { superTypeId: e.id } })}
+            href={getLink('superType', {
+              queries: { superTypeId: e.id, name: e.name },
+            })}
           />
         ))}
       </SidebarGroup>
