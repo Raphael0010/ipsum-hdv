@@ -12,7 +12,8 @@ const ItemType: NextPageWithLayout = () => {
   const { LL } = useI18nContext();
   const { query } = useRouter();
   const [typeId, setTypeId] = useState<number | null>(null);
-  const { itemTypeId } = query;
+  const [typeName, setTypeName] = useState<string | null>(null);
+  const { itemTypeId, name } = query;
 
   useEffect(() => {
     if (itemTypeId && typeof itemTypeId === 'string') {
@@ -20,11 +21,21 @@ const ItemType: NextPageWithLayout = () => {
     }
   }, [itemTypeId]);
 
+  useEffect(() => {
+    if (name && typeof name === 'string') {
+      setTypeName(name);
+    }
+  }, [name]);
+
+  if (!typeId || !typeName) {
+    return null;
+  }
+
   return (
     <>
       <NextSeo description={LL.common.seo.description()} />
       {/*<AuthShowcase />*/}
-      {typeId && <ItemTypeContainer itemTypeId={typeId} />}
+      {typeId && <ItemTypeContainer itemTypeId={typeId} name={typeName} />}
     </>
   );
 };

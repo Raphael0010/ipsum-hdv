@@ -31,6 +31,7 @@ const Header = styled('div', {
 
 type ItemProps = {
   itemTypeId: number;
+  name: string;
 };
 
 export enum EFilter {
@@ -39,7 +40,7 @@ export enum EFilter {
   ratio = 'ratio',
 }
 
-export const ItemTypeContainer: FC<ItemProps> = ({ itemTypeId }) => {
+export const ItemTypeContainer: FC<ItemProps> = ({ itemTypeId, name }) => {
   const [serverId] = useLocalStorage('serverId', 401);
   const [search, setSearch] = useState<string>('');
   const [filter, setFilter] = useState<EFilter>(EFilter.none);
@@ -55,20 +56,13 @@ export const ItemTypeContainer: FC<ItemProps> = ({ itemTypeId }) => {
       { refetchOnWindowFocus: false }
     );
 
-  const { data: categorieName } = trpc.item.getCategorieName.useQuery(
-    {
-      id: itemTypeId,
-    },
-    { refetchOnWindowFocus: false }
-  );
-
   return (
     <>
-      <NextSeo title={categorieName?.name} />
+      <NextSeo title={name} />
       <div>
         <Header>
           <Title as="h1" css={{ h1: { paddingBottom: '20px' } }}>
-            {categorieName?.name}
+            {name}
           </Title>
           <Textfield
             onChange={(e) => {

@@ -116,7 +116,7 @@ export const SuperTypeContainer: FC<Props> = ({ superTypeId, name }) => {
                   <Link
                     key={e.id}
                     href={getLink('itemType', {
-                      queries: { itemTypeId: e.id },
+                      queries: { itemTypeId: e.id, name: e.name },
                     })}
                     passHref
                   >
