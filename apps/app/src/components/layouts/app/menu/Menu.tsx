@@ -140,7 +140,8 @@ export const Menu: FC<Props> = ({ isOpen, setIsOpen }) => {
           defaultValue={serverId.toString()}
           css={{
             container: {
-              padding: '10px',
+              paddingLeft: '10px',
+              paddingRight: '10px',
             },
           }}
           data={[
