@@ -66,6 +66,7 @@ type Props = {
 export const Menu: FC<Props> = ({ isOpen, setIsOpen }) => {
   const [search, setSearch] = useState<string>('');
   const router = useRouter();
+  const { locale } = useRouter();
   const [serverId, setServerId] = useLocalStorage('serverId', 401);
   const debouncedValue = useDebounce<string>(search, 200);
   const [startUpdate, setStartUpdate] = useState(false);
@@ -77,8 +78,6 @@ export const Menu: FC<Props> = ({ isOpen, setIsOpen }) => {
       },
       { refetchOnWindowFocus: false, onSuccess: () => setStartUpdate(true) }
     );
-
-  const { locale } = useRouter();
 
   const { data: serverAndLastUpdate } = trpc.item.getServerAndUpdate.useQuery(
     {},
