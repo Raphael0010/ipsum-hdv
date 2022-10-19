@@ -101,7 +101,7 @@ export const HomeContainer: FC = () => {
           </CraftStatsContainer>
 
           <CraftStatsContainer>
-            <Link href={getLink('stats')} passHref>
+            <Link href={getLink('statsChoose')} passHref>
               <a>
                 <Title as="h2">
                   {

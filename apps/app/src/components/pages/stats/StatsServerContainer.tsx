@@ -1,13 +1,13 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { styled } from '@ipsum-hdv/ui/dist/core/pikas-ui/Styles';
 import { Title } from '@ipsum-hdv/ui/dist/components/title/Title';
 import { trpc } from '../../../utils/trpc';
-import { useLocalStorage } from 'usehooks-ts';
 import { timeAgo } from '../../../utils/date';
 import { getServerName } from '../../../utils/server';
 import { useRouter } from 'next/router';
 import { CustomDialog } from '@ipsum-hdv/ui/dist/core/pikas-ui/Dialog';
 import { PacmanLoader } from '@ipsum-hdv/ui/dist/core/pikas-ui/Loader';
+import { useLocalStorage } from 'usehooks-ts';
 
 const Container = styled('div', {});
 
@@ -37,25 +37,33 @@ const Head = styled('div', {
   textAlign: 'center',
 });
 
-export const StatsContainer: FC = () => {
+type Props = {
+  serverId: number;
+};
+
+export const StatsServerContainer: FC<Props> = ({ serverId }) => {
   const { locale } = useRouter();
-  const [serverId] = useLocalStorage('serverId', 401);
   const [formatPrice] = useState(Intl.NumberFormat(locale));
+
+  const [serverIdLocal] = useLocalStorage('serverId', 401);
+  let serverIdToUse = serverIdLocal;
+
   const { data: lastUpdate, isLoading: loadingLastUpdate } =
-    trpc.stats.getLastUpdate.useQuery(
-      {
-        serverId,
-      },
-      { refetchOnWindowFocus: true }
-    );
+    trpc.stats.getLastUpdate.useQuery({
+      serverId: serverIdToUse,
+    });
 
   const { data: amountOfPrice, isLoading: loadingAmountOfPrice } =
-    trpc.stats.getAmountOfPrice.useQuery(
-      {
-        serverId,
-      },
-      { refetchOnWindowFocus: true }
-    );
+    trpc.stats.getAmountOfPrice.useQuery({
+      serverId: serverIdToUse,
+    });
+
+  useEffect(() => {
+    if (serverIdLocal !== serverId) {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      serverIdToUse = serverId;
+    }
+  }, [serverIdLocal, serverId]);
 
   if (loadingAmountOfPrice || loadingLastUpdate) {
     return (
@@ -84,7 +92,7 @@ export const StatsContainer: FC = () => {
           as="h1"
           css={{ h1: { paddingBottom: '30px', paddingTop: '10px' } }}
         >
-          Statistiques pour le serveur {getServerName(serverId)}
+          Statistiques pour le serveur {getServerName(serverIdToUse)}
         </Title>
         <HeadContainer>
           <SContainer>

@@ -5,7 +5,9 @@ export const { getLink } = routes({
   links: {
     home: '/',
     craft: '/craft',
-    stats: '/stats',
+    statsChoose: '/stats/choose',
+    statsGlobal: '/stats/global',
+    statsServer: '/stats/:serverId',
     almanax: '/almanax',
     superType: '/superType/:superTypeId',
     itemType: '/itemType/:itemTypeId',
