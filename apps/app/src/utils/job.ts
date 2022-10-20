@@ -1,4 +1,5 @@
 export enum EJob {
+  None = -1,
   Bucheron = 2,
   ForgeurEpees = 11,
   SculpteurArcs = 13,

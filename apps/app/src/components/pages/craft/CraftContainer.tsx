@@ -4,9 +4,27 @@ import { Title } from '@ipsum-hdv/ui/dist/components/title/Title';
 import { Select } from '@ipsum-hdv/ui/dist/core/pikas-ui/Select';
 import { Label } from '@ipsum-hdv/ui/dist/components/text/label/Label';
 import { EJob, jobsFilter } from '../../../utils/job';
+import { Button } from '@ipsum-hdv/ui/dist/components/inputs/button/index';
+import { trpc } from '../../../utils/trpc';
+import { useLocalStorage } from 'usehooks-ts';
+import { Grid } from '@ipsum-hdv/ui/dist/core/pikas-ui/Grid';
+import Link from 'next/link';
+import { getLink } from '@ipsum-hdv/router/dist/app';
 
 const Head = styled('div', {
   textAlign: 'center',
+});
+
+const ImgBox = styled('div', {
+  justifyContent: 'center',
+  display: 'flex',
+  marginBottom: 10,
+});
+
+const ContentBx = styled('div', {
+  textAlign: 'center',
+  transition: '1s',
+  zIndex: '10',
 });
 
 const Container = styled('div', {
@@ -32,8 +50,25 @@ const SContainer = styled('div', {
 });
 
 export const CraftContainer: FC = () => {
+  const [serverId] = useLocalStorage('serverId', 401);
   const [nbCase, setNbCase] = useState<number>(-1);
   const [job, setJob] = useState<EJob>(-1);
+  const [benefice, setBenefice] = useState<number>(2);
+  const [isSearchable, setIsSearchable] = useState<boolean>(false);
+
+  const { data, isLoading: loadingData } = trpc.craft.craftOptimizer.useQuery(
+    {
+      nbCase,
+      job,
+      benefice,
+      serverId,
+    },
+    {
+      refetchOnWindowFocus: false,
+      enabled: isSearchable,
+      onSuccess: () => setIsSearchable(false),
+    }
+  );
 
   return (
     <div>
@@ -107,6 +142,11 @@ export const CraftContainer: FC = () => {
             onChange={(e) => setJob(Number(e))}
             defaultValue={job.toString()}
             width="auto"
+            css={{
+              container: {
+                paddingBottom: '10px',
+              },
+            }}
             data={[
               {
                 name: 'Métier',
@@ -117,8 +157,155 @@ export const CraftContainer: FC = () => {
               },
             ]}
           />
+
+          <Label>Bénéfice</Label>
+          <Select
+            onChange={(e) => setBenefice(Number(e))}
+            defaultValue={benefice.toString()}
+            width="auto"
+            css={{
+              container: {
+                paddingBottom: '10px',
+              },
+            }}
+            data={[
+              {
+                items: [
+                  {
+                    label: 'Ratio',
+                    value: '1',
+                  },
+                  {
+                    label: 'Kamas',
+                    value: '2',
+                  },
+                ],
+              },
+            ]}
+          />
+          <Button
+            type="submit"
+            style={{ marginTop: 8 }}
+            onClick={() => setIsSearchable(true)}
+          >
+            Optimisation
+          </Button>
         </SContainer>
       </Container>
+      <Grid
+        css={{ alignItems: 'stretch', gridAutoRows: '1fr', paddingTop: '$5' }}
+        type="container"
+        cols={{ default: 12 }}
+      >
+        {loadingData && isSearchable && (
+          <Grid
+            css={{
+              display: 'flex',
+              flex: 1,
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: '$BACKGROUND_LIGHTER',
+              borderRadius: '20px',
+              overflow: 'hidden',
+              padding: '10px',
+            }}
+            type="item"
+            cols={{ default: 12 }}
+          >
+            <ImgBox>
+              {
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  alt="charge"
+                  height={100}
+                  width={100}
+                  src={`/images/joris.png`}
+                />
+              }
+            </ImgBox>
+            <ContentBx>
+              <Label>Je charge les données !</Label>
+            </ContentBx>
+          </Grid>
+        )}
+        {data?.length === 0 && (
+          <Grid
+            css={{
+              display: 'flex',
+              flex: 1,
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: '$BACKGROUND_LIGHTER',
+              borderRadius: '20px',
+              overflow: 'hidden',
+              padding: '10px',
+            }}
+            type="item"
+            cols={{ default: 12 }}
+          >
+            <ImgBox>
+              {
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  alt="charge"
+                  height={100}
+                  width={100}
+                  src={`/images/joris.png`}
+                />
+              }
+            </ImgBox>
+            <ContentBx>
+              <Label>Aucune données !</Label>
+            </ContentBx>
+          </Grid>
+        )}
+        {data && (
+          <>
+            {data.map((e) => (
+              <Grid
+                key={e.id}
+                css={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: '$BACKGROUND_LIGHTER',
+                  borderRadius: '20px',
+                  overflow: 'hidden',
+                  padding: '10px',
+                }}
+                type="item"
+                cols={{ default: 12, xl: 2, lg: 4, md: 6, sm: 8, xs: 12 }}
+              >
+                <Link
+                  key={e.id}
+                  href={getLink('item', { queries: { itemId: e.id } })}
+                  passHref
+                >
+                  <a>
+                    <ImgBox>
+                      {e.iconId && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          alt={e.name}
+                          height={100}
+                          width={100}
+                          src={`https://dofustouch.cdn.ankama.com/assets/2.42.2_U7k-aouuURq6Y4uGi0cvG.0puOIzszMT/gfx/items/${e.iconId}.png`}
+                        />
+                      )}
+                    </ImgBox>
+                    <ContentBx>
+                      <Label>{e.name}</Label>
+                    </ContentBx>
+                  </a>
+                </Link>
+              </Grid>
+            ))}
+          </>
+        )}
+      </Grid>
     </div>
   );
 };

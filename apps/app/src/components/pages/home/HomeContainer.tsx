@@ -11,7 +11,7 @@ import { useDebounce } from 'usehooks-ts';
 import { Title } from '@ipsum-hdv/ui/dist/components/title/Title';
 const Container = styled('div', {});
 
-const CraftStatsContainer = styled('div', {
+const CraftStatsContainer = styled('a', {
   justifyContent: 'center',
   flexDirection: 'column',
   alignItems: 'center',
@@ -80,64 +80,57 @@ export const HomeContainer: FC = () => {
           Bienvenue sur l'hôtel des ventes IPSUM
         </Title>
         <HeadContainer>
-          <CraftStatsContainer>
-            <Link href={getLink('craft')} passHref>
-              <a>
-                <Title as="h2">
-                  {
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      height={50}
-                      style={{ verticalAlign: 'middle' }}
-                      width={50}
-                      alt="craft"
-                      src="images/jobIcone.png"
-                    ></img>
-                  }{' '}
-                  Craft
-                </Title>
-              </a>
-            </Link>
-          </CraftStatsContainer>
-
-          <CraftStatsContainer>
-            <Link href={getLink('statsChoose')} passHref>
-              <a>
-                <Title as="h2">
-                  {
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      height={40}
-                      style={{ verticalAlign: 'middle' }}
-                      width={40}
-                      alt="stats"
-                      src="images/statsIcone.png"
-                    ></img>
-                  }{' '}
-                  Statistiques
-                </Title>
-              </a>
-            </Link>
-          </CraftStatsContainer>
-          <CraftStatsContainer>
-            <Link href={getLink('almanax')} passHref>
-              <a>
-                <Title as="h2">
-                  {
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      height={60}
-                      style={{ verticalAlign: 'middle' }}
-                      width={40}
-                      alt="alama"
-                      src="images/alamaIcone.webp"
-                    ></img>
-                  }{' '}
-                  Almanax
-                </Title>
-              </a>
-            </Link>
-          </CraftStatsContainer>
+          <Link href={getLink('craft')} passHref>
+            <CraftStatsContainer>
+              <Title as="h2">
+                {
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    height={50}
+                    style={{ verticalAlign: 'middle' }}
+                    width={50}
+                    alt="craft"
+                    src="images/jobIcone.png"
+                  ></img>
+                }{' '}
+                Craft
+              </Title>
+            </CraftStatsContainer>
+          </Link>
+          <Link href={getLink('statsChoose')} passHref>
+            <CraftStatsContainer>
+              <Title as="h2">
+                {
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    height={40}
+                    style={{ verticalAlign: 'middle' }}
+                    width={40}
+                    alt="stats"
+                    src="images/statsIcone.png"
+                  ></img>
+                }{' '}
+                Statistiques
+              </Title>
+            </CraftStatsContainer>
+          </Link>
+          <Link href={getLink('almanax')} passHref>
+            <CraftStatsContainer>
+              <Title as="h2">
+                {
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    height={60}
+                    style={{ verticalAlign: 'middle' }}
+                    width={40}
+                    alt="alama"
+                    src="images/alamaIcone.webp"
+                  ></img>
+                }{' '}
+                Almanax
+              </Title>
+            </CraftStatsContainer>
+          </Link>
         </HeadContainer>
 
         <TextBlock css={{ paddingTop: '20px' }}>
