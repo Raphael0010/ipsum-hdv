@@ -1,8 +1,8 @@
 import { z } from 'zod';
-import { t } from './trpc';
+import { router, publicProcedure } from '../routers/trpc';
 
-export const statsRouter = t.router({
-  getLastUpdate: t.procedure
+export const statsRouter = router({
+  getLastUpdate: publicProcedure
     .input(z.object({ serverId: z.number().optional() }))
     .query(async ({ ctx, input }) => {
       const { serverId } = input;
@@ -36,7 +36,7 @@ export const statsRouter = t.router({
       }
     }),
 
-  getAmountOfPrice: t.procedure
+  getAmountOfPrice: publicProcedure
     .input(z.object({ serverId: z.number().optional() }))
     .query(async ({ ctx, input }) => {
       const { serverId } = input;
@@ -56,9 +56,11 @@ export const statsRouter = t.router({
       }
     }),
 
-  getAmountOfItems: t.procedure.input(z.object({})).query(async ({ ctx }) => {
-    const amount = await ctx.prisma.item.count();
+  getAmountOfItems: publicProcedure
+    .input(z.object({}))
+    .query(async ({ ctx }) => {
+      const amount = await ctx.prisma.item.count();
 
-    return amount;
-  }),
+      return amount;
+    }),
 });

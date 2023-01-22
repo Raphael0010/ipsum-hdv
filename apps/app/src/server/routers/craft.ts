@@ -1,11 +1,11 @@
 import { z } from 'zod';
 import { EJob } from '../../utils/job';
-import { t } from './trpc';
+import { router, publicProcedure } from './trpc';
 // eslint-disable-next-line import/extensions
 import recipes from '../../utils/recipes.json';
 
-export const craftRouter = t.router({
-  craftOptimizer: t.procedure
+export const craftRouter = router({
+  craftOptimizer: publicProcedure
     .input(
       z.object({
         nbCase: z.number(),
@@ -40,12 +40,12 @@ export const craftRouter = t.router({
       // benefice 1 = ratio
       // benefice 2 = kamas
 
-      const all: {
+      const all: Array<{
         id: number;
         name: string;
         iconId: number;
         profit: number;
-      }[] = [];
+      }> = [];
       firstLoop: for (const a of allItems) {
         if (!a.prices[0] || a.prices[0].x1 === 0) {
           continue;

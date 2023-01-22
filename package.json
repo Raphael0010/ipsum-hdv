@@ -25,8 +25,8 @@
     "db:seed": "turbo db:seed",
     "generate": "turbo generate",
     "test": "turbo test",
-    "build:docker": "COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yml build --parallel",
-    "start:docker": "docker-compose -f docker-compose.yml up -d"
+    "build:docker": "COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker compose --env-file .env.local -f docker-compose.yml build --parallel",
+    "start:docker": "docker compose --env-file .env.local -f docker-compose.yml up -d"
   },
   "devDependencies": {
     "eslint": "^8.24.0",

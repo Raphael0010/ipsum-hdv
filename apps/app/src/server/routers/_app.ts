@@ -3,9 +3,9 @@ import { statsRouter } from './stats';
 import { craftRouter } from './craft';
 import { protectedExampleRouter } from './protected';
 import { userRouter } from './user';
-import { t } from './trpc';
+import { router } from './trpc';
 
-export const appRouter = t.router({
+export const appRouter = router({
   user: userRouter,
   protected: protectedExampleRouter,
   item: itemRouter,

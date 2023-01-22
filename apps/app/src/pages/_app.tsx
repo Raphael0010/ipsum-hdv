@@ -32,12 +32,8 @@ export type NextPageWithLayout<
   namespaces?: Namespaces[];
 };
 
-type AppPropsWithLayout = AppProps & {
+type AppPropsWithLayout = AppProps<{ session?: Session | null | undefined }> & {
   Component: NextPageWithLayout;
-} & {
-  pageProps: AppProps['pageProps'] & {
-    session?: Session | null | undefined;
-  };
 };
 
 const MyApp = ({

@@ -1,13 +1,13 @@
 /* eslint-disable no-await-in-loop */
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
-import { t } from './trpc';
+import { router, publicProcedure } from './trpc';
 // eslint-disable-next-line import/extensions
 import recipes from '../../utils/recipes.json';
 import { EFilter } from '../../components/pages/itemType/ItemTypeContainer';
 
-export const itemRouter = t.router({
-  getMostProfitableItemToCraft: t.procedure
+export const itemRouter = router({
+  getMostProfitableItemToCraft: publicProcedure
     .input(z.object({ serverId: z.number() }))
     .query(async ({ ctx, input }) => {
       const { serverId } = input;
@@ -99,7 +99,7 @@ export const itemRouter = t.router({
       };
     }),
 
-  getItemCraft: t.procedure
+  getItemCraft: publicProcedure
     .input(z.object({ itemId: z.number(), serverId: z.number() }))
     .query(async ({ ctx, input }) => {
       const { itemId, serverId } = input;
@@ -204,7 +204,7 @@ export const itemRouter = t.router({
       };
     }),
 
-  byId: t.procedure
+  byId: publicProcedure
     .input(
       z.object({
         id: z.number(),
@@ -230,9 +230,9 @@ export const itemRouter = t.router({
       };
     }),
 
-  byName: t.procedure
+  byName: publicProcedure
     .input(z.object({ name: z.string() }))
-    .query(({ ctx, input }) => {
+    .query(async ({ ctx, input }) => {
       const { name } = input;
       return ctx.prisma.item
         .findFirst({
@@ -241,7 +241,7 @@ export const itemRouter = t.router({
         .prices();
     }),
 
-  byTypeIdSearch: t.procedure
+  byTypeIdSearch: publicProcedure
     .input(
       z.object({
         id: z.number(),
@@ -296,12 +296,12 @@ export const itemRouter = t.router({
             },
           },
         });
-        const all: {
+        const all: Array<{
           id: number;
           name: string;
           iconId: number;
           profit: number;
-        }[] = [];
+        }> = [];
         firstLoop: for (const a of data) {
           if (!a.prices[0] || a.prices[0].x1 === 0) {
             continue;
@@ -375,7 +375,7 @@ export const itemRouter = t.router({
       }
     }),
 
-  allItemsByName: t.procedure
+  allItemsByName: publicProcedure
     .input(z.object({ search: z.string() }))
     .query(({ ctx, input }) => {
       const { search } = input;
@@ -396,7 +396,7 @@ export const itemRouter = t.router({
       });
     }),
 
-  pricesByItemId: t.procedure
+  pricesByItemId: publicProcedure
     .input(z.object({ id: z.number(), serverId: z.number() }))
     .query(async ({ ctx, input }) => {
       const { id, serverId } = input;
@@ -426,9 +426,9 @@ export const itemRouter = t.router({
       }
       return res;
     }),
-  all: t.procedure
+  all: publicProcedure
     .input(z.object({ take: z.number(), skip: z.number() }))
-    .query(({ ctx, input }) => {
+    .query(async ({ ctx, input }) => {
       const { take, skip } = input;
       return ctx.prisma.item.findMany({
         take,
@@ -440,7 +440,7 @@ export const itemRouter = t.router({
       });
     }),
 
-  typeNameAll: t.procedure.input(z.object({})).query(({ ctx }) =>
+  typeNameAll: publicProcedure.input(z.object({})).query(async ({ ctx }) =>
     ctx.prisma.itemType.findMany({
       select: {
         id: true,
@@ -452,7 +452,7 @@ export const itemRouter = t.router({
     })
   ),
 
-  getCategorieName: t.procedure
+  getCategorieName: publicProcedure
     .input(z.object({ id: z.number() }))
     .query(({ ctx, input }) => {
       const { id } = input;
@@ -467,7 +467,7 @@ export const itemRouter = t.router({
       });
     }),
 
-  getServerName: t.procedure
+  getServerName: publicProcedure
     .input(z.object({ serverId: z.number() }))
     .query(({ ctx, input }) => {
       const { serverId } = input;
@@ -482,9 +482,9 @@ export const itemRouter = t.router({
       });
     }),
 
-  superTypeSearch: t.procedure
+  superTypeSearch: publicProcedure
     .input(z.object({ search: z.string() }))
-    .query(({ ctx, input }) => {
+    .query(async ({ ctx, input }) => {
       const { search } = input;
       if (search.length === 0) {
         return ctx.prisma.itemSuperType.findMany({
@@ -514,15 +514,15 @@ export const itemRouter = t.router({
       });
     }),
 
-  getItemTypeFromSuperType: t.procedure
+  getItemTypeFromSuperType: publicProcedure
     .input(z.object({ superTypeId: z.number(), search: z.string().optional() }))
     .query(async ({ ctx, input }) => {
       const { superTypeId, search } = input;
 
-      let res: {
+      let res: Array<{
         id: number;
         name: string;
-      }[] = [];
+      }> = [];
 
       if (search && search.length !== 0) {
         res = await ctx.prisma.itemType.findMany({
@@ -555,8 +555,11 @@ export const itemRouter = t.router({
         });
       }
 
-      const final: { id: number; name: string; image: number | undefined }[] =
-        [];
+      const final: Array<{
+        id: number;
+        name: string;
+        image: number | undefined;
+      }> = [];
 
       for (const r of res) {
         const p = {
@@ -581,7 +584,7 @@ export const itemRouter = t.router({
       return final;
     }),
 
-  getSuperType: t.procedure
+  getSuperType: publicProcedure
     .input(z.object({ superTypeId: z.number() }))
     .query(({ ctx, input }) => {
       const { superTypeId } = input;
@@ -597,7 +600,7 @@ export const itemRouter = t.router({
       });
     }),
 
-  getRandomItemFromType: t.procedure
+  getRandomItemFromType: publicProcedure
     .input(z.object({ typeId: z.number() }))
     .query(async ({ ctx, input }) => {
       const { typeId } = input;
@@ -615,25 +618,27 @@ export const itemRouter = t.router({
       return res[Math.floor(Math.random() * res.length)];
     }),
 
-  getServerAndUpdate: t.procedure.input(z.object({})).query(({ ctx }) =>
-    ctx.prisma.server.findMany({
-      select: {
-        id: true,
-        name: true,
-        prices: {
-          select: {
-            createdAt: true,
+  getServerAndUpdate: publicProcedure
+    .input(z.object({}))
+    .query(async ({ ctx }) =>
+      ctx.prisma.server.findMany({
+        select: {
+          id: true,
+          name: true,
+          prices: {
+            select: {
+              createdAt: true,
+            },
+            orderBy: {
+              createdAt: 'desc',
+            },
+            take: 1,
           },
-          orderBy: {
-            createdAt: 'desc',
-          },
-          take: 1,
         },
-      },
-    })
-  ),
+      })
+    ),
 
-  getStats: t.procedure.input(z.object({})).query(async ({ ctx }) => {
+  getStats: publicProcedure.input(z.object({})).query(async ({ ctx }) => {
     const allPriceCount = await ctx.prisma.price.count({});
     const allItemCount = await ctx.prisma.item.count({});
     const lastUpdate = await ctx.prisma.price.findFirst({

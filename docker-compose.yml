@@ -2,52 +2,19 @@ version: "3.8"
 
 services:
   app:
-    container_name: app
+    container_name: ipsum_hdv
     build:
       context: .
       dockerfile: ./apps/app/Dockerfile
-      args:
-        - DATABASE_URL=postgres://postgres:postgres:@localhost:5432/postgres
-    restart: always
-    ports:
-      - 3000:3000
-    depends_on:
-      - database
-    links:
-      - database
-    networks:
-      - app_network
-  # api:
-  #   container_name: api
-  #   build:
-  #     context: .
-  #     dockerfile: ./apps/api/Dockerfile
-  #   restart: always
-  #   ports:
-  #     - 3001:3001
-  #   networks:
-  #     - app_network
-  database:
-    platform: linux/amd64
-    image: postgres
-    container_name: turborepo_postgres
-    restart: always
-    ports:
-      - 5432:5432
-    networks:
-      - app_network
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    volumes:
-      - database:/var/lib/postgresql/data
-
-volumes:
-  database:
-    driver: local
-
-# Define a network, which allows containers to communicate
-# with each other, by using their container name as a hostname
+        - DATABASE_URL=${DATABASE_URL}
+        - API_PASSWORD=${API_PASSWORD}
+    restart: always
+    ports:
+      - 3055:3000
+    networks:
+      - app_network
+      
 networks:
   app_network:
     external: true

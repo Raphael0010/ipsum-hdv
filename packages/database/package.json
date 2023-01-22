@@ -9,35 +9,37 @@
     "dist/**"
   ],
   "scripts": {
+    "prebuild": "pnpm run generate",
     "build": "tsup",
     "clean": "rm -rf .turbo node_modules dist",
-    "db:migrate:deploy": "prisma migrate deploy",
-    "db:migrate:dev": "prisma migrate dev",
-    "db:push": "prisma db push",
-    "db:seed": "tsx src/seed.ts",
-    "dev": "tsup --watch",
-    "generate": "prisma generate",
-    "format": "prisma format && prettier --cache --write \"**/*.{ts,tsx}\"",
-    "prelint": "pnpm generate && pnpm build",
-    "lint": "cross-env TIMING=1 eslint src --fix",
-    "prebuild": "pnpm run generate",
+    "db:migrate:deploy": "pnpm with-env migrate deploy",
+    "db:migrate:dev": "pnpm with-env migrate dev",
+    "db:migrate:reset": "pnpm with-env migrate reset",
+    "db:push": "pnpm with-env db push --skip-generate",
+    "db:seed": "dotenv -c -e ../../.env -- tsx src/seed.ts",
     "predev": "pnpm run generate",
-    "studio": "prisma studio"
+    "dev": "tsup --watch",
+    "format": "prisma format && prettier --cache --write \"**/*.{ts,tsx}\"",
+    "generate": "prisma generate",
+    "lint": "cross-env TIMING=1 eslint src --fix",
+    "studio": "pnpm with-env studio",
+    "with-env": "dotenv -c -e ../../.env -- prisma"
   },
   "dependencies": {
-    "@prisma/client": "^4.4.0"
+    "@prisma/client": "^4.9.0"
   },
   "devDependencies": {
 		"@ipsum-hdv/prettier": "workspace:*",
     "@ipsum-hdv/tsconfig": "workspace:*",
     "@types/node": "^18.7.23",
     "cross-env": "^7.0.3",
+    "dotenv-cli": "^6.0.0",
     "eslint": "^8.24.0",
     "eslint-config-custom": "workspace:*",
     "prettier": "^2.7.1",
-    "prisma": "^4.4.0",
-    "tsup": "^6.2.3",
-    "tsx": "^3.9.0",
-    "typescript": "^4.8.4"
+    "prisma": "^4.9.0",
+    "tsup": "^6.5.0",
+    "tsx": "^3.12.2",
+    "typescript": "4.9.4"
   }
 }

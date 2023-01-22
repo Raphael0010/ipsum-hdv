@@ -5,7 +5,7 @@ const seo: NextSeoProps = {
     type: 'website',
     locale: 'en_IE',
     url: 'https://www.ipsum-hdv.vercel.app/fr',
-    site_name:
+    siteName:
       'Ipsum HDV - La meilleure solution pour parcourir les hôtel de ventes de dofus touch en toute simplicité',
   },
   twitter: {
