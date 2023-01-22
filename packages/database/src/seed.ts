@@ -8,7 +8,7 @@ const DEFAULT_USERS = [
     name: 'Tim Apple',
     email: 'tim@apple.com',
   },
-] as Partial<User>[];
+] as Array<Partial<User>>;
 
 const loadServer = async (): Promise<void> => {
   await prisma.server.createMany({

@@ -9,12 +9,13 @@ export const formatErrors = (
 ) =>
   Object.entries(errors)
     .map(([name, value]) => {
-      if (value && '_errors' in value)
+      if (value && '_errors' in value) {
         return `${name}: ${value._errors.join(', ')}\n`;
+      }
     })
     .filter(Boolean);
 
-if (_clientEnv.success === false) {
+if (!_clientEnv.success) {
   console.error(
     '❌ Invalid environment variables:\n',
     ...formatErrors(_clientEnv.error.format())
@@ -25,7 +26,7 @@ if (_clientEnv.success === false) {
 /**
  * Validate that client-side environment variables are exposed to the client.
  */
-for (let key of Object.keys(_clientEnv.data)) {
+for (const key of Object.keys(_clientEnv.data)) {
   if (!key.startsWith('NEXT_PUBLIC_')) {
     console.warn('❌ Invalid public environment variable name:', key);
 
