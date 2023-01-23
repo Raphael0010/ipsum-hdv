@@ -20,8 +20,9 @@ const plugins = [withBundleAnalyzer, withPWA];
 
 /** @type {import("next").NextConfig} */
 const config = {
+  swcMinify: true,
   reactStrictMode: true,
-  output: process.platform !== 'win32' ? 'standalone' : undefined,
+  output: 'standalone',
   experimental: {
     outputFileTracingRoot: join(__dirname, '../../'),
   },
