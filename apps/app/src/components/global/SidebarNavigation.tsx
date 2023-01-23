@@ -45,7 +45,7 @@ const NavLink = styled('a', {
 });
 
 export const SidebarNavigation: FC<SidebarNavigationProps> = (props) => (
-  <Link href={props.href ?? '#'}>
+  <Link href={props.href ?? '#'} legacyBehavior>
     <NavLink
       active={props.selected ? 'selected' : undefined}
       onClick={props.onClick}

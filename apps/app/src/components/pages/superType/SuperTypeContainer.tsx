@@ -120,22 +120,20 @@ export const SuperTypeContainer: FC<Props> = ({ superTypeId, name }) => {
                     })}
                     passHref
                   >
-                    <a>
-                      <ImgBox>
-                        {e.image && (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
-                            alt={e.name}
-                            height={100}
-                            width={100}
-                            src={`https://dofustouch.cdn.ankama.com/assets/2.42.2_U7k-aouuURq6Y4uGi0cvG.0puOIzszMT/gfx/items/${e.image}.png`}
-                          />
-                        )}
-                      </ImgBox>
-                      <ContentBx>
-                        <Label>{e.name}</Label>
-                      </ContentBx>
-                    </a>
+                    <ImgBox>
+                      {e.image && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          alt={e.name}
+                          height={100}
+                          width={100}
+                          src={`https://dofustouch.cdn.ankama.com/assets/2.42.2_U7k-aouuURq6Y4uGi0cvG.0puOIzszMT/gfx/items/${e.image}.png`}
+                        />
+                      )}
+                    </ImgBox>
+                    <ContentBx>
+                      <Label>{e.name}</Label>
+                    </ContentBx>
                   </Link>
                 </Grid>
               ))}

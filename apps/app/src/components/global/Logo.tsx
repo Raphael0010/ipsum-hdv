@@ -33,7 +33,7 @@ export const Logo: FC<Props> = ({ onClick }) => (
     onClick={onClick}
     className="flex items-center justify-center pt-6"
   >
-    <Link href={getLink('home')}>
+    <Link href={getLink('home')} legacyBehavior>
       <Image alt="IpsumHdv" src={'/images/logo.svg'} />
     </Link>
   </LogoContainer>

@@ -206,39 +206,36 @@ export const ItemContainer: FC = () => {
                       <Link
                         href={getLink('item', { queries: { itemId: i.id } })}
                       >
-                        <a>
-                          <Label css={{ fontSize: '$EM-X-SMALL' }}>
-                            {
-                              // eslint-disable-next-line @next/next/no-img-element
-                              <img
-                                alt={data.name}
-                                height={50}
-                                style={{
-                                  verticalAlign: 'middle',
-                                }}
-                                width={50}
-                                src={`https://dofustouch.cdn.ankama.com/assets/2.42.2_U7k-aouuURq6Y4uGi0cvG.0puOIzszMT/gfx/items/${i.iconId}.png`}
-                              />
-                            }
-                            <span
+                        <Label css={{ fontSize: '$EM-X-SMALL' }}>
+                          {
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              alt={data.name}
+                              height={50}
                               style={{
-                                backgroundColor: '#292E36',
-                                borderRadius: '10px',
-                                padding: '5px',
+                                verticalAlign: 'middle',
                               }}
-                            >
-                              x{i.quantity}
-                            </span>
-                          </Label>
-
-                          <Label>{i.name}</Label>
-                          <Label css={{ fontSize: '$EM-X-SMALL' }}>
-                            Prix unitaire : {formatPrice.format(i.x1)}
-                          </Label>
-                          <Label css={{ fontSize: '$EM-X-SMALL' }}>
-                            Prix total : {formatPrice.format(i.total)}
-                          </Label>
-                        </a>
+                              width={50}
+                              src={`https://dofustouch.cdn.ankama.com/assets/2.42.2_U7k-aouuURq6Y4uGi0cvG.0puOIzszMT/gfx/items/${i.iconId}.png`}
+                            />
+                          }
+                          <span
+                            style={{
+                              backgroundColor: '#292E36',
+                              borderRadius: '10px',
+                              padding: '5px',
+                            }}
+                          >
+                            x{i.quantity}
+                          </span>
+                        </Label>
+                        <Label>{i.name}</Label>
+                        <Label css={{ fontSize: '$EM-X-SMALL' }}>
+                          Prix unitaire : {formatPrice.format(i.x1)}
+                        </Label>
+                        <Label css={{ fontSize: '$EM-X-SMALL' }}>
+                          Prix total : {formatPrice.format(i.total)}
+                        </Label>
                       </Link>
                     </Grid>
                   ))}

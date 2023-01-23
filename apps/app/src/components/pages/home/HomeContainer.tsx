@@ -80,7 +80,7 @@ export const HomeContainer: FC = () => {
           Bienvenue sur l'hôtel des ventes IPSUM
         </Title>
         <HeadContainer>
-          <Link href={getLink('craft')} passHref>
+          <Link href={getLink('craft')} passHref legacyBehavior>
             <CraftStatsContainer>
               <Title as="h2">
                 {
@@ -97,7 +97,7 @@ export const HomeContainer: FC = () => {
               </Title>
             </CraftStatsContainer>
           </Link>
-          <Link href={getLink('statsChoose')} passHref>
+          <Link href={getLink('statsChoose')} passHref legacyBehavior>
             <CraftStatsContainer>
               <Title as="h2">
                 {
@@ -114,7 +114,7 @@ export const HomeContainer: FC = () => {
               </Title>
             </CraftStatsContainer>
           </Link>
-          <Link href={getLink('almanax')} passHref>
+          <Link href={getLink('almanax')} passHref legacyBehavior>
             <CraftStatsContainer>
               <Title as="h2">
                 {
@@ -207,22 +207,20 @@ export const HomeContainer: FC = () => {
                 href={getLink('item', { queries: { itemId: e.id } })}
                 passHref
               >
-                <a>
-                  <ImgBox>
-                    {e.iconId && (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        alt={e.name}
-                        height={100}
-                        width={100}
-                        src={`https://dofustouch.cdn.ankama.com/assets/2.42.2_U7k-aouuURq6Y4uGi0cvG.0puOIzszMT/gfx/items/${e.iconId}.png`}
-                      />
-                    )}
-                  </ImgBox>
-                  <ContentBx>
-                    <Label>{e.name}</Label>
-                  </ContentBx>
-                </a>
+                <ImgBox>
+                  {e.iconId && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      alt={e.name}
+                      height={100}
+                      width={100}
+                      src={`https://dofustouch.cdn.ankama.com/assets/2.42.2_U7k-aouuURq6Y4uGi0cvG.0puOIzszMT/gfx/items/${e.iconId}.png`}
+                    />
+                  )}
+                </ImgBox>
+                <ContentBx>
+                  <Label>{e.name}</Label>
+                </ContentBx>
               </Link>
             </Grid>
           ))}

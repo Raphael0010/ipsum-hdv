@@ -53,7 +53,7 @@ export const StatsChooseContainer: FC = () => {
           Statistiques
         </Title>
         <HeadContainer>
-          <Link href={getLink('statsGlobal')} passHref>
+          <Link href={getLink('statsGlobal')} passHref legacyBehavior>
             <SContainer>
               <Title as="h3">
                 <ImgBox>
@@ -74,6 +74,7 @@ export const StatsChooseContainer: FC = () => {
           <Link
             href={getLink('statsServer', { queries: { serverId } })}
             passHref
+            legacyBehavior
           >
             <SContainer>
               <Title as="h3">
