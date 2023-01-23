@@ -1,6 +1,7 @@
 FROM node AS builder
 #RUN apk update
 #RUN apk add --no-cache libc6-compat
+
 # Set working directory
 WORKDIR /app
 RUN yarn global add turbo
@@ -10,7 +11,6 @@ RUN turbo prune --scope=@ipsum-hdv/app --docker
 # Add lockfile and package.json's of isolated subworkspace
 FROM node AS installer
 #RUN apk update
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
 #RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
@@ -53,7 +53,6 @@ COPY --from=installer /app/apps/app/public ./apps/app/public
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=installer --chown=nextjs:nodejs /app/apps/app/.next/standalone ./
 COPY --from=installer --chown=nextjs:nodejs /app/apps/app/.next/static ./apps/app/.next/static
-COPY --from=installer --chown=nextjs:nodejs /app/packages/database/prisma/schema.prisma /app/apps/app/.next/server/chunks
 
 CMD node apps/app/server.js
 
