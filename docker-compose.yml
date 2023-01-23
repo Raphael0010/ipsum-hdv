@@ -9,6 +9,10 @@ services:
     environment:
         - DATABASE_URL=${DATABASE_URL}
         - API_PASSWORD=${API_PASSWORD}
+        - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+        - NEXTAUTH_URL=${NEXTAUTH_URL}
+        - GITHUB_ID=${GITHUB_ID}
+        - GITHUB_SECRET=${GITHUB_SECRET}
     restart: always
     ports:
       - 3055:3000

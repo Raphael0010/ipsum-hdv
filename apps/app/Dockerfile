@@ -25,11 +25,6 @@ RUN pnpm install -r --frozen-lockfile
 # Install sharp for Next.js Image Optimization
 RUN pnpm add -C ./apps/app sharp
 
-# Next.js collects completely anonymous telemetry data about general usage.
-# Learn more here: https://nextjs.org/telemetry
-# Uncomment the following line in case you want to disable telemetry during the build.
-# ENV NEXT_TELEMETRY_DISABLED 1
-
 # Build the project
 COPY --from=builder /app/out/full/ .
 COPY .env.local .
@@ -58,5 +53,7 @@ COPY --from=installer /app/apps/app/public ./apps/app/public
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=installer --chown=nextjs:nodejs /app/apps/app/.next/standalone ./
 COPY --from=installer --chown=nextjs:nodejs /app/apps/app/.next/static ./apps/app/.next/static
+COPY --from=installer --chown=nextjs:nodejs /app/packages/database/prisma/schema.prisma /app/apps/app/.next/server/chunks
 
 CMD node apps/app/server.js
+
