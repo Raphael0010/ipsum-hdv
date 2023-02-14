@@ -169,7 +169,7 @@ export const ItemTypeContainer: FC<ItemProps> = ({ itemTypeId, name }) => {
                 }
               </ImgBox>
               <ContentBx>
-                <Label>Aucune données !</Label>
+                <Label>Aucune donnée !</Label>
               </ContentBx>
             </Grid>
           )}

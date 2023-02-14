@@ -257,7 +257,7 @@ export const CraftContainer: FC = () => {
               }
             </ImgBox>
             <ContentBx>
-              <Label>Aucune données !</Label>
+              <Label>Aucune donnée !</Label>
             </ContentBx>
           </Grid>
         )}

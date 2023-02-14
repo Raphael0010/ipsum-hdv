@@ -113,7 +113,7 @@ export const ItemContainer: FC = () => {
         onClose={(): void => {
           void push(getLink('home'));
         }}
-        title={'Aucune données !'}
+        title={'Aucune donnée !'}
         content={`(Item ${itemId} sur ${getServerName(serverId)})`}
       />
     );
@@ -368,7 +368,7 @@ export const ItemContainer: FC = () => {
                 },
               },
             }}
-            emptyMessage="Aucune donnée pour cette item"
+            emptyMessage="Aucune donnée pour cet item"
             pagination={{
               active: true,
             }}
